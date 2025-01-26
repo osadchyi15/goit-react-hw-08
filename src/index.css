@@ -49,14 +49,11 @@ button {
   transition: 500ms;
 }
 
-button:hover {
+button:hover,
+button:focus {
   border-color: transparent;
   background-color: rgb(33, 33, 33);
   color: rgb(249, 249, 249);
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
 }
 
 ul,

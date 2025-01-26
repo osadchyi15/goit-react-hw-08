@@ -1,7 +1,7 @@
 .contact {
   display: flex;
   flex-direction: row;
-  padding: 8px;
+  padding: 8px 20px 8px 20px;
   border-radius: 8px;
   border: 1px solid rgb(69, 69, 69);
   box-shadow: 3px 3px 5px rgb(69, 69, 69);
@@ -23,4 +23,46 @@
   flex-direction: column;
   gap: 6px;
   text-align: left;
+}
+
+.buttons {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  align-items: center;
+}
+
+.deleteButtonImage,
+.editButtonImage {
+  border-radius: none;
+  border: none;
+  padding: none;
+  font-size: 16px;
+  font-weight: 500;
+  background-color: transparent;
+  color: rgb(33, 33, 33);
+  cursor: pointer;
+  text-align: center;
+  width: 20px;
+  transition: 500ms;
+}
+
+.deleteButtonImage:hover,
+.deleteButtonImage:focus {
+  color: red;
+  background-color: transparent;
+  border: none;
+  background: transparent;
+}
+.editButtonImage:hover,
+.editButtonImage:focus {
+  color: rgb(10, 187, 10);
+  background-color: transparent;
+  border: none;
+  background: transparent;
+}
+
+.buttonsSize {
+  width: 20px;
+  height: 20px;
 }
