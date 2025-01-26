@@ -1,0 +1,17 @@
+.searchFormLabel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 30px;
+}
+
+.contactFormInput {
+  border-radius: 8px;
+  border: 1px solid #fafafa;
+  padding: 8px;
+  text-align: left;
+  background-color: transparent;
+  width: 100%;
+}

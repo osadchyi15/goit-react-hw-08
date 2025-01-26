@@ -1,0 +1,33 @@
+.contactForm {
+  border-radius: 12px;
+  border: 1px solid #fafafa;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.contactFormLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+}
+
+.contactFormInput {
+  border-radius: 8px;
+  border: 1px solid #fafafa;
+  padding: 8px;
+  text-align: left;
+  background-color: transparent;
+  width: 100%;
+}
+
+.errorText {
+  font-size: 12px;
+  color: red;
+}

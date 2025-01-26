@@ -1,0 +1,17 @@
+.contact {
+  display: flex;
+  flex-direction: row;
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid #fafafa;
+  margin-bottom: 12px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.contactDescr {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
