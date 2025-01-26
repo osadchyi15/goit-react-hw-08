@@ -10,8 +10,10 @@ export const selectDeletingItem = (state) => state.contacts.deletingItem;
 export const selectFilteredContacts = createSelector(
   [selectContacts, selectFilters],
   (contacts, filterValue) => {
-    return contacts.filter((item) =>
-      item.name.toLowerCase().includes(filterValue.toLowerCase())
+    return contacts.filter(
+      (item) =>
+        item.name.toLowerCase().includes(filterValue.toLowerCase()) ||
+        item.number.includes(filterValue)
     );
   }
 );
