@@ -45,7 +45,7 @@ const ContactForm = () => {
       number: values.number,
     };
 
-    const match = contacts.some(
+    const match = contacts.find(
       (contact) => contact.number === newContact.number
     );
 
@@ -54,7 +54,9 @@ const ContactForm = () => {
       actions.resetForm();
     } else {
       toast.error(
-        "A contact with this phone number already exist",
+        `A contact "${match.name.toUpperCase()}"\nalready contain phone number\n"${
+          newContact.number
+        }"`,
         toastParams
       );
       actions.resetForm();
