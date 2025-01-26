@@ -3,30 +3,36 @@ import ContactForm from "./components/ContactForm/ContactForm";
 import SearchBox from "./components/SearchBox/SearchBox";
 import ContactList from "./components/ContactList/ContactList";
 import { useDispatch, useSelector } from "react-redux";
+
+import { fetchContacts } from "./redux/contacts/operations";
+import { useEffect } from "react";
 import {
-  selectContacts,
+  selectFilteredContacts,
   selectIsError,
   selectIsLoading,
-} from "./redux/contactsSlice";
-import { fetchContacts } from "./redux/contactsOps";
-import { useEffect } from "react";
+  selectIsModalOpen,
+} from "./redux/contacts/selectors";
+import ConfirmModal from "./components/ConfirmModal/ConfirmModal";
 
 function App() {
-  const contacts = useSelector(selectContacts);
+  const contacts = useSelector(selectFilteredContacts);
+  const isModalOpen = useSelector(selectIsModalOpen);
+  const isError = useSelector(selectIsError);
+  const isLoading = useSelector(selectIsLoading);
+
   const dispatch = useDispatch();
+
+  console.log(isModalOpen);
 
   useEffect(() => {
     dispatch(fetchContacts());
   }, [dispatch]);
 
-  const isError = useSelector(selectIsError);
-  const isLoading = useSelector(selectIsLoading);
-
   return (
     <div className="wrapper">
-      <h1 className="title">Phonebook</h1>
       <ContactForm />
       <SearchBox />
+      {isLoading && <h2>Loading...</h2>}
       <div>
         {contacts.length === 0 ? (
           <div className="addContact">
@@ -38,7 +44,7 @@ function App() {
         )}
       </div>
       {isError && <h2>Something went wrong!</h2>}
-      {isLoading && <h2>Loading...</h2>}
+      <ConfirmModal />
     </div>
   );
 }

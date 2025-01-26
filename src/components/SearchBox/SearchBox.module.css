@@ -1,17 +1,38 @@
 .searchFormLabel {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
   gap: 8px;
-  margin-bottom: 30px;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(69, 69, 69, 0.5);
 }
 
 .contactFormInput {
   border-radius: 8px;
-  border: 1px solid #fafafa;
+  border: 1px solid rgb(69, 69, 69);
+  box-shadow: 3px 3px 5px rgb(69, 69, 69);
   padding: 8px;
   text-align: left;
   background-color: transparent;
-  width: 100%;
+  width: 200px;
+  outline: none;
+  color: rgb(33, 33, 33);
+  transition: 500ms;
+}
+
+.contactFormInput::placeholder {
+  color: rgba(33, 33, 33, 0.5);
+}
+
+.contactFormInput:hover,
+.contactFormInput:focus {
+  border: 1px solid rgb(33, 33, 33);
+  box-shadow: 3px 3px 5px rgb(33, 33, 33);
+  transform: scale(1.02);
+}
+
+.searchFormTitle {
+  font-weight: 500;
 }

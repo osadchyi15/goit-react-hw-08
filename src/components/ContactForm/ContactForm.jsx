@@ -1,12 +1,25 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import css from "./ContactForm.module.css";
 import * as Yup from "yup";
-import { useDispatch } from "react-redux";
-import { addContact } from "../../redux/contactsOps";
+import { useDispatch, useSelector } from "react-redux";
+import { addContact } from "../../redux/contacts/operations";
+import { selectContacts } from "../../redux/contacts/selectors";
+import toast from "react-hot-toast";
 
 const initialValues = {
   name: "",
   number: "",
+};
+
+const toastParams = {
+  position: "bottom-right",
+  duration: "500",
+  style: {
+    textAlign: "left",
+    background: "rgba(200, 200, 200)",
+    border: "1px solid black",
+    boxShadow: "3px 3px 5px rgb(33, 33, 33)",
+  },
 };
 
 const phoneRegExp = /^[0-9]{3}-[0-9]{3}-[0-9]{4}$/;
@@ -24,14 +37,28 @@ const contactValidationSchema = Yup.object().shape({
 
 const ContactForm = () => {
   const dispatch = useDispatch();
+  const contacts = useSelector(selectContacts);
 
   const handleSubmit = (values, actions) => {
     const newContact = {
       name: values.name,
       number: values.number,
     };
-    dispatch(addContact(newContact));
-    actions.resetForm();
+
+    const match = contacts.some(
+      (contact) => contact.number === newContact.number
+    );
+
+    if (!match) {
+      dispatch(addContact(newContact));
+      actions.resetForm();
+    } else {
+      toast.error(
+        "A contact with this phone number already exist",
+        toastParams
+      );
+      actions.resetForm();
+    }
   };
   return (
     <Formik
@@ -42,36 +69,36 @@ const ContactForm = () => {
       {() => {
         return (
           <Form className={css.contactForm}>
-            <label className={css.contactFormLabel}>
-              <span className={css.contactFormTitle}>Name</span>
+            <div className={css.labels}>
+              <label className={css.contactFormLabel}>
+                <span className={css.contactFormTitle}>New contact data</span>
+                <Field
+                  className={css.contactFormInput}
+                  placeholder="Name Surname"
+                  name="name"
+                />
+                <ErrorMessage
+                  className={css.errorText}
+                  name="name"
+                  component="span"
+                />
+              </label>
 
-              <Field
-                className={css.contactFormInput}
-                placeholder="Name Surname"
-                name="name"
-              />
-              <ErrorMessage
-                className={css.errorText}
-                name="name"
-                component="span"
-              />
-            </label>
+              <label className={css.contactFormLabel}>
+                <span className={css.contactFormTitle}>Phone number</span>
 
-            <label className={css.contactFormLabel}>
-              <span className={css.contactFormTitle}>Number</span>
-
-              <Field
-                className={css.contactFormInput}
-                placeholder="xxx-xxx-xxxx"
-                name="number"
-              />
-              <ErrorMessage
-                className={css.errorText}
-                name="number"
-                component="span"
-              />
-            </label>
-
+                <Field
+                  className={css.contactFormInput}
+                  placeholder="xxx-xxx-xxxx"
+                  name="number"
+                />
+                <ErrorMessage
+                  className={css.errorText}
+                  name="number"
+                  component="span"
+                />
+              </label>
+            </div>
             <button type="submit" className={css.ContactFormSubmitButton}>
               Add contact
             </button>

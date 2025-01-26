@@ -1,20 +1,37 @@
-import { createSelector, createSlice, isAnyOf } from "@reduxjs/toolkit";
-import { addContact, deleteContact, fetchContacts } from "./contactsOps";
-import { selectFilters } from "./filtersSlice";
+import { createSlice, isAnyOf } from "@reduxjs/toolkit";
+import { addContact, deleteContact, fetchContacts } from "./operations";
+import toast from "react-hot-toast";
+
+const toastParams = {
+  position: "bottom-right",
+  duration: "500",
+  style: {
+    textAlign: "left",
+    background: "rgba(200, 200, 200)",
+    border: "1px solid black",
+    boxShadow: "3px 3px 5px rgb(33, 33, 33)",
+  },
+};
 
 const initialState = {
   items: [],
   isLoading: false,
   isError: false,
+  isModalOpen: false,
+  deletingItem: {},
 };
 
 const contactsSlice = createSlice({
   name: "contacts",
   initialState,
-  selectors: {
-    selectContacts: (state) => state.items,
+  reducers: {
+    setIsModalStatus: (state, action) => {
+      state.isModalOpen = action.payload;
+    },
+    setDeletingItem: (state, action) => {
+      state.deletingItem = action.payload;
+    },
   },
-
   extraReducers: (builder) => {
     builder
       .addCase(fetchContacts.fulfilled, (state, action) => {
@@ -28,11 +45,19 @@ const contactsSlice = createSlice({
         );
         state.isLoading = false;
         state.isError = false;
+        toast.error(
+          `Contact:\n Name: ${action.payload.name}\nNumber: ${action.payload.number}\nhas just been deleted`,
+          toastParams
+        );
       })
       .addCase(addContact.fulfilled, (state, action) => {
         state.items.push(action.payload);
         state.isError = false;
         state.isLoading = false;
+        toast.success(
+          `Contact:\n Name: ${action.payload.name}\nNumber: ${action.payload.number}\nhas just been added`,
+          toastParams
+        );
       })
       .addMatcher(
         isAnyOf(
@@ -60,15 +85,4 @@ const contactsSlice = createSlice({
 });
 
 export const contactsSliceReducer = contactsSlice.reducer;
-export const { selectContacts } = contactsSlice.selectors;
-export const selectIsLoading = (state) => state.contacts.isLoading;
-export const selectIsError = (state) => state.contacts.isError;
-
-export const selectFilteredContacts = createSelector(
-  [selectContacts, selectFilters],
-  (contacts, filterValue) => {
-    return contacts.filter((item) =>
-      item.name.toLowerCase().includes(filterValue.toLowerCase())
-    );
-  }
-);
+export const { setIsModalStatus, setDeletingItem } = contactsSlice.actions;

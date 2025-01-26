@@ -2,14 +2,10 @@ import css from "./Contact.module.css";
 import { RiPhoneFill } from "react-icons/ri";
 import { IoPerson } from "react-icons/io5";
 import { useDispatch } from "react-redux";
-import { deleteContact } from "../../redux/contactsOps";
+import { setDeletingItem, setIsModalStatus } from "../../redux/contacts/slice";
 
 const Contact = ({ name, number, id }) => {
   const dispatch = useDispatch();
-
-  const onDeleteContact = (contactId) => {
-    dispatch(deleteContact(contactId));
-  };
 
   return (
     <div className={css.contact}>
@@ -23,7 +19,16 @@ const Contact = ({ name, number, id }) => {
       </ul>
       <button
         type="button"
-        onClick={() => onDeleteContact(id)}
+        onClick={() => {
+          dispatch(
+            setDeletingItem({
+              id,
+              name,
+              number,
+            })
+          );
+          dispatch(setIsModalStatus(true));
+        }}
         className={css.contactDeletButton}
       >
         Delete
