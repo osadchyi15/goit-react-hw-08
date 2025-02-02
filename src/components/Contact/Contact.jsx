@@ -1,28 +1,41 @@
-import css from "./Contact.module.css";
 import { RiPhoneFill } from "react-icons/ri";
 import { IoPerson } from "react-icons/io5";
-import { useDispatch } from "react-redux";
-import { setDeletingItem, setIsModalStatus } from "../../redux/contacts/slice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setDeletingItem,
+  setEditingItem,
+  setIsEdit,
+} from "../../redux/contacts/slice";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FaEdit } from "react-icons/fa";
+import { selectIsEdit } from "../../redux/contacts/selectors";
 
 const Contact = ({ name, number, id }) => {
   const dispatch = useDispatch();
+  const isEdit = useSelector(selectIsEdit);
 
   return (
-    <div className={css.contact}>
-      <ul className={css.contactDescr}>
-        <li className={css.contactName}>
+    <div className="w-xs flex justify-between bg-base-200 border border-base-300 p-4 rounded-box text-center">
+      <ul className="flex flex-col gap-2">
+        <li className="flex gap-2 items-center text-left">
           <IoPerson /> {name}
         </li>
-        <li className={css.contactNumber}>
+        <li className="flex gap-2 text-left items-center">
           <RiPhoneFill /> {number}
         </li>
       </ul>
 
-      <div className={css.buttons}>
-        <button type="button" className={css.editButtonImage}>
-          <FaEdit className={css.buttonsSize} />
+      <div className="flex gap-4">
+        <button
+          hidden={isEdit}
+          type="button"
+          className="border-none p-none font-bold transition duration-500 cursor-pointer bg-transparent hover:text-green-500"
+          onClick={() => {
+            dispatch(setEditingItem({ id, name, number }));
+            dispatch(setIsEdit(true));
+          }}
+        >
+          <FaEdit className="text-xl" />
         </button>
 
         <button
@@ -35,11 +48,14 @@ const Contact = ({ name, number, id }) => {
                 number,
               })
             );
-            dispatch(setIsModalStatus(true));
+
+            document.getElementById("my_modal_3").showModal();
+            dispatch(setIsEdit(false));
+            dispatch(setEditingItem({}));
           }}
-          className={css.deleteButtonImage}
+          className="border-none p-none font-bold transition duration-500 cursor-pointer bg-transparent hover:text-red-500"
         >
-          <RiDeleteBin6Line className={css.buttonsSize} />
+          <RiDeleteBin6Line className="text-xl" />
         </button>
       </div>
     </div>

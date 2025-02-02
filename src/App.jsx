@@ -1,50 +1,70 @@
 import "./App.css";
-import ContactForm from "./components/ContactForm/ContactForm";
-import SearchBox from "./components/SearchBox/SearchBox";
-import ContactList from "./components/ContactList/ContactList";
-import { useDispatch, useSelector } from "react-redux";
 
-import { fetchContacts } from "./redux/contacts/operations";
+import { Route, Routes } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { refreshUserThunk } from "./redux/auth/operations";
 import { useEffect } from "react";
-import {
-  selectFilteredContacts,
-  selectIsError,
-  selectIsLoading,
-  selectIsModalOpen,
-} from "./redux/contacts/selectors";
-import ConfirmModal from "./components/ConfirmModal/ConfirmModal";
+
+import Layout from "./Layout";
+import PrivateRoute from "./PrivateRoute";
+import PublicRoute from "./PublicRoute";
+
+import Home from "./pages/Home";
+import Contacts from "./pages/Contacts";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import NotFound from "./pages/NotFound";
+
+import { selectIsRefreshing } from "./redux/auth/selectors";
 
 function App() {
-  const contacts = useSelector(selectFilteredContacts);
-  const isModalOpen = useSelector(selectIsModalOpen);
-  const isError = useSelector(selectIsError);
-  const isLoading = useSelector(selectIsLoading);
-
   const dispatch = useDispatch();
-
-  console.log(isModalOpen);
+  const isRefreshing = useSelector(selectIsRefreshing);
 
   useEffect(() => {
-    dispatch(fetchContacts());
+    dispatch(refreshUserThunk());
   }, [dispatch]);
 
-  return (
+  return isRefreshing ? null : (
     <div className="wrapper">
-      <ContactForm />
-      <SearchBox />
-      {isLoading && <h2>Loading...</h2>}
-      <div>
-        {contacts.length === 0 ? (
-          <div className="addContact">
-            <p>Your phonebook is empty.</p>
-            <p>Please add your first contact to the phonebook!</p>
-          </div>
-        ) : (
-          <ContactList />
-        )}
-      </div>
-      {isError && <h2>Something went wrong!</h2>}
-      <ConfirmModal />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <PrivateRoute>
+              <Layout />
+            </PrivateRoute>
+          }
+        >
+          <Route index element={<Home />} />
+
+          <Route
+            path="contacts"
+            element={
+              <PrivateRoute>
+                <Contacts />
+              </PrivateRoute>
+            }
+          />
+        </Route>
+        <Route
+          path="login"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="register"
+          element={
+            <PublicRoute>
+              <Register />
+            </PublicRoute>
+          }
+        />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </div>
   );
 }

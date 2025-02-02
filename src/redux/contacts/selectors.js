@@ -4,8 +4,9 @@ import { selectFilters } from "../filters/selectors";
 export const selectContacts = (state) => state.contacts.items;
 export const selectIsLoading = (state) => state.contacts.isLoading;
 export const selectIsError = (state) => state.contacts.isError;
-export const selectIsModalOpen = (state) => state.contacts.isModalOpen;
 export const selectDeletingItem = (state) => state.contacts.deletingItem;
+export const selectIsEdit = (state) => state.contacts.isEdit;
+export const selectEditingItem = (state) => state.contacts.editingItem;
 
 export const selectFilteredContacts = createSelector(
   [selectContacts, selectFilters],

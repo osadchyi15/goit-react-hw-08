@@ -1,5 +1,10 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
-import { addContact, deleteContact, fetchContacts } from "./operations";
+import {
+  addContact,
+  deleteContact,
+  fetchContacts,
+  editContact,
+} from "./operations";
 import toast from "react-hot-toast";
 
 const toastParams = {
@@ -17,19 +22,23 @@ const initialState = {
   items: [],
   isLoading: false,
   isError: false,
-  isModalOpen: false,
   deletingItem: {},
+  isEdit: false,
+  editingItem: {},
 };
 
 const contactsSlice = createSlice({
   name: "contacts",
   initialState,
   reducers: {
-    setIsModalStatus: (state, action) => {
-      state.isModalOpen = action.payload;
-    },
     setDeletingItem: (state, action) => {
       state.deletingItem = action.payload;
+    },
+    setIsEdit: (state, action) => {
+      state.isEdit = action.payload;
+    },
+    setEditingItem: (state, action) => {
+      state.editingItem = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -54,16 +63,21 @@ const contactsSlice = createSlice({
         state.items.push(action.payload);
         state.isError = false;
         state.isLoading = false;
-        toast.success(
-          `Contact:\n Name: ${action.payload.name}\nNumber: ${action.payload.number}\nhas just been added`,
-          toastParams
-        );
       })
+      .addCase(editContact.fulfilled, (state, action) => {
+        state.items = state.items.map((item) =>
+          item.id === state.editingItem.id ? action.payload : item
+        );
+        state.isError = false;
+        state.isLoading = false;
+      })
+
       .addMatcher(
         isAnyOf(
           fetchContacts.pending,
           addContact.pending,
-          deleteContact.pending
+          deleteContact.pending,
+          editContact.pending
         ),
         (state, action) => {
           state.isError = false;
@@ -74,7 +88,8 @@ const contactsSlice = createSlice({
         isAnyOf(
           fetchContacts.rejected,
           addContact.rejected,
-          deleteContact.rejected
+          deleteContact.rejected,
+          editContact.rejected
         ),
         (state, action) => {
           state.isError = action.payload;
@@ -85,4 +100,5 @@ const contactsSlice = createSlice({
 });
 
 export const contactsSliceReducer = contactsSlice.reducer;
-export const { setIsModalStatus, setDeletingItem } = contactsSlice.actions;
+export const { setIsModalStatus, setDeletingItem, setIsEdit, setEditingItem } =
+  contactsSlice.actions;

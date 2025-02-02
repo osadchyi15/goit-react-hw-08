@@ -1,12 +1,8 @@
-import { useEffect } from "react";
-import css from "./ConfirmModal.module.css";
+import { useEffect, useRef } from "react";
 import Modal from "react-modal";
 import { useDispatch, useSelector } from "react-redux";
-import { setDeletingItem, setIsModalStatus } from "../../redux/contacts/slice";
-import {
-  selectDeletingItem,
-  selectIsModalOpen,
-} from "../../redux/contacts/selectors";
+import { setDeletingItem } from "../../redux/contacts/slice";
+import { selectDeletingItem } from "../../redux/contacts/selectors";
 import { deleteContact } from "../../redux/contacts/operations";
 
 Modal.setAppElement("#root");
@@ -14,19 +10,13 @@ Modal.setAppElement("#root");
 const ConfirmModal = () => {
   const dispatch = useDispatch();
   const deletingItem = useSelector(selectDeletingItem);
-  const isModalOpen = useSelector(selectIsModalOpen);
-
-  console.log(deletingItem);
-
-  const handleCloseModal = () => {
-    dispatch(setDeletingItem({}));
-    dispatch(setIsModalStatus(false));
-  };
+  const modalRef = useRef(null);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (event.code === "Escape") {
-        handleCloseModal();
+      if (event.code === "Escape" && modalRef.current?.open) {
+        dispatch(setDeletingItem({}));
+        modalRef.current?.close();
       }
     };
 
@@ -37,58 +27,62 @@ const ConfirmModal = () => {
     };
   }, [dispatch]);
 
-  const handleBackDropClick = (event) => {
-    if (event.target === event.currentTarget) {
-      handleCloseModal();
-    }
-  };
-
   return (
-    <Modal
-      onClick={handleBackDropClick}
-      className={css.Modal}
-      overlayClassName={css.Overlay}
-      isOpen={isModalOpen}
-      onRequestClose={handleCloseModal}
-      preventScroll={true}
-    >
-      <button
-        type="button"
-        className={css.closeModalBtn}
-        onClick={handleCloseModal}
+    <>
+      <dialog
+        ref={modalRef}
+        id="my_modal_3"
+        className="modal"
+        onClick={() => {
+          dispatch(setDeletingItem({}));
+          modalRef.current?.close();
+        }}
       >
-        &times;
-      </button>
-      <div className={css.modalQuestion}>
-        <div className={css.modalQuestionText}>
-          <p className={css.modalText}>
+        <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+          <h3 className="font-bold text-lg">
             Are you sure you want to delete this contact?
-          </p>
-          <p>{deletingItem.name}</p>
-          <p>{deletingItem.number}</p>
+          </h3>
+          <div className="flex-col py-4">
+            <p>{deletingItem.name}</p>
+            <p>{deletingItem.number}</p>
+          </div>
+
+          <form method="dialog">
+            {/* if there is a button in form, it will close the modal */}
+            <button
+              onClick={() => {
+                dispatch(setDeletingItem({}));
+                modalRef.current?.close();
+              }}
+              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+            >
+              ✕
+            </button>
+            <div className="flex gap-4 justify-center">
+              <button
+                className="btn btn-outline"
+                onClick={() => {
+                  dispatch(setDeletingItem({}));
+                  modalRef.current?.close();
+                }}
+              >
+                No
+              </button>
+              <button
+                className="btn btn-outline btn-warning"
+                onClick={() => {
+                  dispatch(deleteContact(deletingItem.id));
+                  dispatch(setDeletingItem({}));
+                  modalRef.current?.close();
+                }}
+              >
+                Yes
+              </button>
+            </div>
+          </form>
         </div>
-        <div className={css.modalOptions}>
-          <button
-            className={css.modalOptionButton}
-            type="button"
-            onClick={handleCloseModal}
-          >
-            No
-          </button>
-          <button
-            className={css.modalOptionButton}
-            type="button"
-            onClick={() => {
-              dispatch(deleteContact(deletingItem.id));
-              dispatch(setDeletingItem({}));
-              dispatch(setIsModalStatus(false));
-            }}
-          >
-            Yes
-          </button>
-        </div>
-      </div>
-    </Modal>
+      </dialog>
+    </>
   );
 };
 
