@@ -75,8 +75,6 @@ const EditContactForm = () => {
     number: editingItem.number,
   };
 
-  console.log(initialValues);
-
   return (
     <Formik
       initialValues={initialValues}

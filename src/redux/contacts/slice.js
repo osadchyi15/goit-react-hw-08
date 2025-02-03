@@ -6,6 +6,7 @@ import {
   editContact,
 } from "./operations";
 import toast from "react-hot-toast";
+import { logoutThunk } from "../auth/operations";
 
 const toastParams = {
   position: "bottom-right",
@@ -71,6 +72,9 @@ const contactsSlice = createSlice({
         state.isError = false;
         state.isLoading = false;
       })
+      .addCase(logoutThunk.fulfilled, (state, action) => {
+        state.items = [];
+      })
 
       .addMatcher(
         isAnyOf(
@@ -100,5 +104,5 @@ const contactsSlice = createSlice({
 });
 
 export const contactsSliceReducer = contactsSlice.reducer;
-export const { setIsModalStatus, setDeletingItem, setIsEdit, setEditingItem } =
+export const { setDeletingItem, setIsEdit, setEditingItem } =
   contactsSlice.actions;
